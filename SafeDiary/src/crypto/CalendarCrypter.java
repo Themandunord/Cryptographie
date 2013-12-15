@@ -20,51 +20,24 @@ import javax.crypto.CipherOutputStream;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.spec.IvParameterSpec;
 
-/**
- * Une classe utilitaire pour le chiffrement déchiffrement de fichier
- * @author Patrick Guichet
- */
 public class CalendarCrypter {
-    // Le générateur aléatoire nécessaire à la fabrication des vecteurs d'initialisation
     private static final SecureRandom RAND = new SecureRandom();
-    // La taille par défaut du buffer de lecture
     private static final int BUFFER_SIZE = 4096;
+    private Cipher cipher = null;
+    private boolean ivNeeded = false;
     // Une collection des noms d'algorithme nécessitant un vecteur d'initialisation
     // typiquement ce sont des algorithmes de chiffrement en continu dont l'état doit
     // être explicitement initialisé, par exemple HC128, Salsa20
     private final static Map<String, Integer> algoWithIV = new HashMap<String, Integer>();
-    // initialisation de la map
     static {
         algoWithIV.put("HC128", 16);
         algoWithIV.put("Salsa20", 8);
     }
-    // L'objet chargé du chiffrage/déchiffrage
-    private Cipher cipher = null;
-    // Indicateur mémorisant si un vecteur d'initialisation est nécessaire
-    private boolean ivNeeded = false;
-
-    /**
-     * Construction d'une instance de la classe.
-     * @param algoName le nom standard de l'algorithme : AES, DES,...
-     * @param modeName le mode d'utilisation : ECB, CBC,...
-     * @param paddingName le nom du rembourrage utilisé : Pkcs5Padding,...
-     * @throws GeneralSecurityException si la construction de l'instance échoue,
-     * typiquement à cause d'un nom non reconnu par le JCE.
-     */
+    
     public CalendarCrypter(String algoName, String modeName, String paddingName)
             throws GeneralSecurityException {
         this.cipher = Cipher.getInstance(makeCipherName(algoName, modeName, paddingName));
     }
-
-    /**
-     * Construction d'une instance de la classe.
-     * @param algoName le nom standard de l'algorithme : AES, DES,...
-     * @param modeName le mode d'utilisation : ECB, CBC,...
-     * @param paddingName le nom du rembourrage utilisé : Pkcs5Padding,...
-     * @param providerName le nom du provider devant implémenter le service
-     * @throws GeneralSecurityException si la construction de l'instance échoue,
-     * typiquement à cause d'un nom non reconnu par le JCE ou si le provider n'est pas installé.
-     */
     public CalendarCrypter(String algoName, String modeName, String paddingName, String providerName)
             throws GeneralSecurityException {
         this.cipher = Cipher.getInstance(makeCipherName(algoName, modeName, paddingName), providerName);
@@ -128,14 +101,6 @@ public class CalendarCrypter {
         cipherOut.close();
     }
 
-    /**
-     * Chiffrement d'un fichier
-     * @param key la clé de chiffrement
-     * @param inFile le fichier à chiffrer
-     * @param outFile le fichier chiffré
-     * @throws GeneralSecurityException si l'opération de chiffrage échoue
-     * @throws IOException si une opération d'entrée/sortie echoue
-     */
     public void cryptFile(Key key, File inFile, File outFile)
             throws GeneralSecurityException, IOException {
         // Le flot d'octets à chiffrer
@@ -180,14 +145,6 @@ public class CalendarCrypter {
         cryptFile(key, new File(inFileName), new File(outFileName));
     }
 
-    /**
-     * Déchiffrement d'un fichier.
-     * @param key la clé de chiffrement.
-     * @param inFile le fichier à déchiffrer.
-     * @param outFile le fichier déchiffré.
-     * @throws GeneralSecurityException si l'opération de chiffrage échoue.
-     * @throws IOException si une opération d'entrée/sortie echoue.
-     */
     public void decryptFile(Key key, File inFile, File outFile)
             throws GeneralSecurityException, IOException {
         BufferedInputStream bin = new BufferedInputStream(new FileInputStream(inFile));
@@ -214,15 +171,6 @@ public class CalendarCrypter {
 
         }
     }
-
-    /**
-     * Déchiffrement d'un fichier.
-     * @param key la clé de chiffrement.
-     * @param inFileName le nom du fichier à déchiffrer.
-     * @param outFileName le nom du fichier chiffré.
-     * @throws GeneralSecurityException si l'opération de chiffrage échoue.
-     * @throws IOException si une opération d'entrée/sortie echoue.
-     */
     public void decryptFile(Key key, String inFileName, String outFileName)
             throws GeneralSecurityException, IOException {
         decryptFile(key, new File(inFileName), new File(outFileName));
