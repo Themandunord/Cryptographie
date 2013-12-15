@@ -11,18 +11,14 @@ import java.io.OutputStream;
 import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.security.SecureRandom;
-import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.crypto.Cipher;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.KeyGenerator;
 import javax.crypto.spec.IvParameterSpec;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
  * Une classe utilitaire pour le chiffrement déchiffrement de fichier
@@ -230,34 +226,6 @@ public class CalendarCrypter {
     public void decryptFile(Key key, String inFileName, String outFileName)
             throws GeneralSecurityException, IOException {
         decryptFile(key, new File(inFileName), new File(outFileName));
-    }
-
-    /**
-     * Exemple d'utilisation de la classe
-     * @param args les éventuels arguments transmis en ligne de commande
-     */
-    public static void main(String[] args) {
-        try {
-            // Pour pouvoir utiliser l'API BouncyCastle au travers du mécanisme standard du JCE
-            Security.addProvider(new BouncyCastleProvider());
-            // Création d'un chiffreur/déchiffreur basé sur l'algorithme Salsa20
-            CalendarCrypter crypter = new CalendarCrypter("Salsa20", null, null);
-            // Génération de la clé secrète pour l'algorithme
-            KeyGenerator kg = KeyGenerator.getInstance("Salsa20");
-            Key key = kg.generateKey();
-            // Chiffrement fichier source
-            crypter.cryptFile(key, "src/td2/FileCrypter.java", "FileCrypter.cry");
-            // Déchiffrement
-            crypter.decryptFile(key, "FileCrypter.cry", "FileCrypter.dat");
-            // Comparaison des longueurs du fichier en clair et du fichier décrypté
-            long srcLength = new File("src/td2/FileCrypter.java").length();
-            long resultLength = new File("FileCrypter.dat").length();
-            assert srcLength == resultLength : String.format(
-                    "fichiers source et cible de longueur distincte %-8d : %-8d !..",
-                    srcLength, resultLength);
-        } catch (Exception ex) {
-            Logger.getLogger(CalendarCrypter.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 }
 
