@@ -52,8 +52,14 @@ public class Calendar {
 	
 	public void setDataByDate(CalendarData cd){
 		CalendarData tmp = this.getDataByDate(cd.getDate());
-		tmp.setDate(cd.getDate());
-		tmp.setEvent(cd.getEvent());
+		if(tmp == null){
+			this.add(cd);
+		}
+		else{
+			tmp.setDate(cd.getDate());
+			tmp.setEvent(cd.getEvent());
+		}
+		
 	}
 	
 	@SuppressWarnings("deprecation")
