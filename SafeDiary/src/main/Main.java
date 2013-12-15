@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.security.Key;
 import java.security.Security;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,12 +42,23 @@ public class Main {
 		Calendar c = new Calendar();
 		c.add(new CalendarData(new Date(), new Event("Coucou", 50, 5)));
 		c.add(new CalendarData(new Date(), new Event("Help", 25, 5)));
-
+		
 		try {
 			System.out.println(new String(c.getBytes()));
-		} catch (UnsupportedEncodingException e) {
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		
+		try {
+			Calendar c1 = new Calendar("Sun Dec 15 17:18:27 CET 2013~Help~25~5;Sun Dec 15 17:18:28 CET 2013~Coucou~50~5");
+			System.out.println(new String(c1.getBytes()));
+		} catch (ParseException | UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
+		
+		
 	}
 
 }
