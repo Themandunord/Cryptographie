@@ -1,8 +1,12 @@
 package model;
 
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class Calendar {
 	
@@ -10,6 +14,20 @@ public class Calendar {
 	
 	public Calendar(){
 		this.datas =  new HashMap<Date, CalendarData>();
+	}
+	
+	public Calendar(String str) throws ParseException{
+		this.datas =  new HashMap<Date, CalendarData>();
+		String tmp[] = str.split(";");
+		
+		for(int i = 0; i < tmp.length ; i++)
+		{
+			String[] tmp_datas = null;
+			tmp_datas = tmp[i].split("~");
+			SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy",Locale.US);
+			Date d = sdf.parse(tmp_datas[0]);
+			this.add(new CalendarData(d, new Event(tmp_datas[1], Integer.valueOf(tmp_datas[2]), Integer.valueOf(tmp_datas[3]))));
+		}
 	}
 
 	public HashMap<Date, CalendarData> getDatas() {
@@ -36,6 +54,19 @@ public class Calendar {
 		CalendarData tmp = this.getDataByDate(cd.getDate());
 		tmp.setDate(cd.getDate());
 		tmp.setEvent(cd.getEvent());
+	}
+	
+	@SuppressWarnings("deprecation")
+	public ArrayList<CalendarData> getDataByDay(Date date){
+		ArrayList<CalendarData> tmp = new ArrayList<CalendarData>();
+		for(CalendarData cd : datas.values()){
+			Date d = cd.getDate();
+			if(d.getYear() == date.getYear() && d.getMonth() == date.getMonth()
+					&& d.getDay() == date.getDay())
+				tmp.add(cd);
+		}
+		
+		return tmp;
 	}
 	
 	public byte[] getBytes() throws UnsupportedEncodingException{

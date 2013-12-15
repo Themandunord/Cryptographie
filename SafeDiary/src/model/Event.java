@@ -5,9 +5,9 @@ public class Event {
 	private int duration;
 	private int hours;
 	
-	public Event(String event, int minute, int hours){
+	public Event(String event, int duration, int hours){
 		this.event = event;
-		this.duration = minute;
+		this.duration = duration;
 		this.hours = hours;
 	}
 	
