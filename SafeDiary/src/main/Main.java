@@ -8,6 +8,8 @@ import java.util.logging.Logger;
 
 import javax.crypto.KeyGenerator;
 
+import model.Calendar;
+
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import crypto.CalendarCrypter;
@@ -21,16 +23,19 @@ public class Main {
             KeyGenerator kg = KeyGenerator.getInstance("Salsa20");
             Key key = kg.generateKey();
             
-            crypter.cryptFile(key, "src/td2/FileCrypter.java", "FileCrypter.cry");
-            crypter.decryptFile(key, "FileCrypter.cry", "FileCrypter.dat");
+            crypter.cryptFile(key, "src/model/Calendar.java", "Calendar.cry");
+            crypter.decryptFile(key, "Calendar.cry", "Calendar.dat");
             
-            long srcLength = new File("src/td2/FileCrypter.java").length();
-            long resultLength = new File("FileCrypter.dat").length();
+            long srcLength = new File("src/model/Calendar.java").length();
+            long resultLength = new File("Calendar.dat").length();
             
             assert srcLength == resultLength : String.format("fichiers source et cible de longueur distincte %-8d : %-8d !..",srcLength, resultLength);
         } catch (Exception ex) {
             Logger.getLogger(CalendarCrypter.class.getName()).log(Level.SEVERE, null, ex);
         }
+		
+		Calendar c = new Calendar();
+
 	}
 
 }

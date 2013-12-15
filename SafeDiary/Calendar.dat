@@ -19,14 +19,6 @@ public class Calendar {
 		this.datas = datas;
 	}
 	
-	public void add(CalendarData cd){
-		this.datas.put(cd.getDate(), cd);
-	}
-	
-	public void remove(CalendarData cd){
-		this.datas.remove(cd.getDate());
-	}
-	
 	public CalendarData getDataByDate(Date date){
 		return this.datas.get(date);
 	}
