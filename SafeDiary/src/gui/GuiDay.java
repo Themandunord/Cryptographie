@@ -1,4 +1,7 @@
-
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package gui;
 
 import java.text.ParseException;
@@ -10,22 +13,31 @@ import javax.swing.JFormattedTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.MaskFormatter;
 
+import model.Calendar;
+import model.CalendarData;
+import model.Event;
+
 /**
  *
  * @author Quentin
  */
 public class GuiDay extends javax.swing.JFrame {
 
+	private Calendar c;
+	private Date d;
     /**
      * Creates new form Day
      */
-    public GuiDay(Date d){
+    public GuiDay(Date d,Calendar c){
         try {
             initComponents();
-            MaskFormatter mask = new MaskFormatter("##.##");
+            MaskFormatter mask = new MaskFormatter("##:##");
             JFormattedTextField jftf = new JFormattedTextField(mask);
             jTable1.getColumn("Durée (HH:mm)").setCellEditor(new DefaultCellEditor(jftf));
+            jTable1.getColumn("Heure (HH:mm)").setCellEditor(new DefaultCellEditor(jftf));
             this.setTitle(d.toString());
+            this.c=c;
+            this.d=d;
         } catch (ParseException ex) {
             Logger.getLogger(GuiDay.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -43,9 +55,10 @@ public class GuiDay extends javax.swing.JFrame {
 
         addButton = new javax.swing.JButton();
         supprButton = new javax.swing.JButton();
-        closeButton = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        okButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -63,24 +76,24 @@ public class GuiDay extends javax.swing.JFrame {
             }
         });
 
-        closeButton.setText("Fermer");
-        closeButton.addActionListener(new java.awt.event.ActionListener() {
+        cancelButton.setText("Annuler");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                closeButtonActionPerformed(evt);
+                cancelButtonActionPerformed(evt);
             }
         });
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"Anniversiare", null},
-                {"Repas", null}
+                {"Anniversiare", null, null},
+                {"Repas", null, null}
             },
             new String [] {
-                "Evènement", "Durée (HH:mm)"
+                "Evènement", "Heure (HH:mm)", "Durée (HH:mm)"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -91,23 +104,33 @@ public class GuiDay extends javax.swing.JFrame {
         jTable1.setRowHeight(30);
         jScrollPane1.setViewportView(jTable1);
 
+        okButton.setText("OK");
+        okButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                okButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(34, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(113, 113, 113)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(closeButton))
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(42, 42, 42)
+                            .addComponent(okButton)
+                            .addGap(18, 18, 18)
+                            .addComponent(cancelButton))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(addButton)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(addButton, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(supprButton, javax.swing.GroupLayout.Alignment.TRAILING))))
+                        .addComponent(supprButton)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -120,7 +143,9 @@ public class GuiDay extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(supprButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(closeButton))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cancelButton)
+                            .addComponent(okButton)))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 351, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -128,12 +153,12 @@ public class GuiDay extends javax.swing.JFrame {
         pack();
     }// </editor-fold>                        
 
-    private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {                                            
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {                                             
         this.dispose();
-    }                                           
+    }                                            
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {                                          
-        ((DefaultTableModel)jTable1.getModel()).addRow(new Object[]{"nom","00.00"});
+        ((DefaultTableModel)jTable1.getModel()).addRow(new Object[]{"nom","00.00","00.00"});
     }                                         
 
     private void supprButtonActionPerformed(java.awt.event.ActionEvent evt) {                                            
@@ -143,11 +168,38 @@ public class GuiDay extends javax.swing.JFrame {
         
     }                                           
 
+    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    	
+    	DefaultTableModel model = (DefaultTableModel)jTable1.getModel();
+    	for(int i=0;i<jTable1.getRowCount();i++)
+    	{
+    		String event = (String) model.getValueAt(i,0);
+    		String hour = (String) model.getValueAt(i,1);
+    		String duration = (String) model.getValueAt(i,2);
+    		
+    		String[] hs = hour.split(":");
+    		int h = Integer.valueOf(hs[0]).intValue();
+    		int m = Integer.valueOf(hs[0]).intValue();
+    		
+    		hs = hour.split(":");
+    		int dh = Integer.valueOf(hs[0]).intValue();
+    		int dm = Integer.valueOf(hs[0]).intValue();
+    		
+    		Date date = new Date(d.getYear(),d.getMonth(),d.getDay(),h,m);
+    		
+    		CalendarData cd = new CalendarData(date,new Event(event,dh*60+dm,h*60+m));
+    		c.setDataByDate(cd);
+    	}
+    	this.dispose();
+        
+    }                                        
+    
     // Variables declaration - do not modify                     
     private javax.swing.JButton addButton;
-    private javax.swing.JButton closeButton;
+    private javax.swing.JButton cancelButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JButton okButton;
     private javax.swing.JButton supprButton;
     // End of variables declaration                   
 }
