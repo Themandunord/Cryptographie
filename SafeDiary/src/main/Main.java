@@ -21,6 +21,7 @@ import crypto.CalendarCrypter;
 
 public class Main {
 
+	@SuppressWarnings("deprecation")
 	public static void main(String[] args) {
 		try {
             Security.addProvider(new BouncyCastleProvider());
@@ -54,9 +55,17 @@ public class Main {
 		try {
 			Calendar c1 = new Calendar("Sun Dec 15 17:18:27 CET 2013~Help~25~5;Sun Dec 15 17:18:28 CET 2013~Coucou~50~5");
 			System.out.println(new String(c1.getBytes()));
+			
+			Date d = new Date(112, 11, 2);
+			c1.setDataByDate(new CalendarData(d, new Event("beuh", 50, 20)));
+			c1.setDataByDate(new CalendarData(d, new Event("beuh", 50, 30)));
+			System.out.println(new String(c1.getBytes()));
+			
 		} catch (ParseException | UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
+		
+		
 		
 		
 	}
