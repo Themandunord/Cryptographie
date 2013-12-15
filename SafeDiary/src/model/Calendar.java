@@ -1,5 +1,6 @@
 package model;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -36,4 +37,19 @@ public class Calendar {
 		tmp.setDate(cd.getDate());
 		tmp.setEvent(cd.getEvent());
 	}
+	
+	public byte[] getBytes() throws UnsupportedEncodingException{
+		String tmp = "";
+		for(CalendarData cd : datas.values()){
+			tmp += cd.getDate() + "~";
+			tmp += cd.getEvent().getEvent() + "~";
+			tmp += cd.getEvent().getDuration() + "~";
+			tmp += cd.getEvent().getHours();
+			tmp += ";";
+		}
+		
+		return tmp.getBytes("utf-8");
+	}
+	
+	
 }

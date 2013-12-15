@@ -1,14 +1,18 @@
 package main;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.security.Key;
 import java.security.Security;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.crypto.KeyGenerator;
 
 import model.Calendar;
+import model.CalendarData;
+import model.Event;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -35,7 +39,14 @@ public class Main {
         }
 		
 		Calendar c = new Calendar();
+		c.add(new CalendarData(new Date(), new Event("Coucou", 50, 5)));
+		c.add(new CalendarData(new Date(), new Event("Help", 25, 5)));
 
+		try {
+			System.out.println(new String(c.getBytes()));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
