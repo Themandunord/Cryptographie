@@ -5,6 +5,7 @@
 package gui;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,10 +39,29 @@ public class GuiDay extends javax.swing.JFrame {
             this.setTitle(d.toString());
             this.c=c;
             this.d=d;
+            initTable();
         } catch (ParseException ex) {
             Logger.getLogger(GuiDay.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+    }
+    
+    private void initTable()
+    {
+    	// obtenir tous les évènements pour la date sélecionnée.
+    	ArrayList<CalendarData> list = c.getDataByDay(d);
+    	
+    	for(CalendarData cd : list)
+    	{
+    		Event e = cd.getEvent();
+    		int hours = e.getHours();
+    		int m = hours%60;
+    		int h = hours/60;
+    		int duration = e.getDuration();
+    		int dm = duration%60;
+    		int dh = duration/60;
+    		((DefaultTableModel)jTable1.getModel()).addRow(new Object[]{e.getEvent(),h+":"+m,dh+":"+dm});
+    	}
+    	
     }
 
     /**
@@ -85,8 +105,6 @@ public class GuiDay extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"Anniversiare", null, null},
-                {"Repas", null, null}
             },
             new String [] {
                 "Evènement", "Heure (HH:mm)", "Durée (HH:mm)"
@@ -158,7 +176,7 @@ public class GuiDay extends javax.swing.JFrame {
     }                                            
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {                                          
-        ((DefaultTableModel)jTable1.getModel()).addRow(new Object[]{"nom","00.00","00.00"});
+        ((DefaultTableModel)jTable1.getModel()).addRow(new Object[]{"nom","00:00","00:00"});
     }                                         
 
     private void supprButtonActionPerformed(java.awt.event.ActionEvent evt) {                                            
@@ -185,10 +203,15 @@ public class GuiDay extends javax.swing.JFrame {
     		int dh = Integer.valueOf(hs[0]).intValue();
     		int dm = Integer.valueOf(hs[0]).intValue();
     		
-    		Date date = new Date(d.getYear(),d.getMonth(),d.getDay(),h,m);
-    		
+    		@SuppressWarnings("deprecation")
+			Date date = (Date) d.clone();
+    		date.setHours(h);
+    		date.setMinutes(m);
+    		System.out.println("h: "+h+"m: "+m);
+    		System.out.println(d + "  clé :" + date);
     		CalendarData cd = new CalendarData(date,new Event(event,dh*60+dm,h*60+m));
     		c.setDataByDate(cd);
+    		System.out.println(c.getDatas());
     	}
     	this.dispose();
         
