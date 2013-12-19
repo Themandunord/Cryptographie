@@ -2,21 +2,23 @@ package crypto;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,12 +27,12 @@ import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 import model.Calendar;
 
 public class CalendarCrypter {
     private static final SecureRandom RAND = new SecureRandom();
-    private static final int BUFFER_SIZE = 4096;
     private Cipher cipher = null;
     private boolean ivNeeded = false;
     private final static Map<String, Integer> algoWithIV = new HashMap<String, Integer>();
@@ -38,7 +40,9 @@ public class CalendarCrypter {
         algoWithIV.put("HC128", 16);
         algoWithIV.put("Salsa20", 8);
     }
-    
+    public CalendarCrypter() throws GeneralSecurityException {
+        this.cipher = Cipher.getInstance(makeCipherName("Salsa20", null, null));
+    }
     public CalendarCrypter(String algoName, String modeName, String paddingName)
             throws GeneralSecurityException {
         this.cipher = Cipher.getInstance(makeCipherName(algoName, modeName, paddingName));
@@ -92,10 +96,11 @@ public class CalendarCrypter {
     	in.close();
     	return new String(b,"utf-8");
     }
-    public void cryptCalendar(Key key, Calendar cal, File outFile) throws GeneralSecurityException, IOException{
+    
+    public void cryptCalendar(String key, Calendar cal, File outFile) throws GeneralSecurityException, IOException{
     	BufferedOutputStream bout = new BufferedOutputStream(new FileOutputStream(outFile));
     	if (!ivNeeded) {
-            processCalendar(key, Cipher.ENCRYPT_MODE, null, cal, bout);
+            processCalendar(this.generateKey(key), Cipher.ENCRYPT_MODE, null, cal, bout);
         } else {
             int ivSize = cipher.getBlockSize();
             if (ivSize == 0) {
@@ -109,14 +114,14 @@ public class CalendarCrypter {
             RAND.nextBytes(bytes);
             AlgorithmParameterSpec ivSpec = new IvParameterSpec(bytes);
             bout.write(bytes);
-            processCalendar(key, Cipher.ENCRYPT_MODE, ivSpec, cal, bout);
+            processCalendar(this.generateKey(key), Cipher.ENCRYPT_MODE, ivSpec, cal, bout);
         }
     }
     
-    public Calendar decryptCalendar(Key key, File inFile) throws GeneralSecurityException, IOException, ParseException {
+    public Calendar decryptCalendar(String key, File inFile) throws GeneralSecurityException, IOException, ParseException {
         BufferedInputStream bin = new BufferedInputStream(new FileInputStream(inFile));
         if (!ivNeeded) {
-            return new Calendar(processCalendarDecrypt(key, Cipher.DECRYPT_MODE, null, bin));
+            return new Calendar(processCalendarDecrypt(this.generateKey(key), Cipher.DECRYPT_MODE, null, bin));
         } else {
             int ivSize = cipher.getBlockSize();
             if (ivSize == 0) {
@@ -131,8 +136,26 @@ public class CalendarCrypter {
             if (nb != ivSize) {
                 throw new IllegalBlockSizeException("Vecteur d'initialisation incorrect!..");
             }
-            return new Calendar(processCalendarDecrypt(key, Cipher.DECRYPT_MODE, new IvParameterSpec(bytes), bin));
+            return new Calendar(processCalendarDecrypt(this.generateKey(key), Cipher.DECRYPT_MODE, new IvParameterSpec(bytes), bin));
         }
+    }
+    private Key generateKey(String password){
+    	SecretKeySpec secretKeySpec = null;
+		try {
+			
+			byte[] keyBytes = (password).getBytes("UTF-8");
+			MessageDigest sha = MessageDigest.getInstance("SHA-1");
+			keyBytes = sha.digest(keyBytes);
+			keyBytes = Arrays.copyOf(keyBytes, 16); // use only first 128 bit
+
+			secretKeySpec = new SecretKeySpec(keyBytes, "AES");
+			
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return secretKeySpec;
     }
 }
 

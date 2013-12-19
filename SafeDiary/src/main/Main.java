@@ -31,27 +31,21 @@ public class Main {
 		
 		CalendarCrypter crypterCustom;
 		try {
-			crypterCustom = new CalendarCrypter("Salsa20", null, null);
-			KeyGenerator kgCustom = KeyGenerator.getInstance("Salsa20");
-			Key key = kgCustom.generateKey();
-	        crypterCustom.cryptCalendar(key, c, new File("Calendar.cry"));
+			crypterCustom = new CalendarCrypter();
+	        crypterCustom.cryptCalendar("test", c, new File("Calendar.cry"));
 	        
-	        outCal = crypterCustom.decryptCalendar(key, new File("Calendar.cry"));
+	        outCal = crypterCustom.decryptCalendar("test", new File("Calendar.cry"));
 	        System.out.println("####"+new String(outCal.getBytes()));
 		} catch (GeneralSecurityException e2) {
-			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		try {
 			System.out.println(new String(c.getBytes()));
 		} catch (UnsupportedEncodingException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
