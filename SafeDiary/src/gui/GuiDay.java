@@ -36,7 +36,8 @@ public class GuiDay extends javax.swing.JFrame {
             JFormattedTextField jftf = new JFormattedTextField(mask);
             jTable1.getColumn("Durée (HH:mm)").setCellEditor(new DefaultCellEditor(jftf));
             jTable1.getColumn("Heure (HH:mm)").setCellEditor(new DefaultCellEditor(jftf));
-            this.setTitle(d.toString());
+            String[] title = d.toGMTString().split(" ");
+            this.setTitle(title[0]+" "+title[1]+" "+title[2]);
             this.c=c;
             this.d=d;
             initTable();
@@ -197,17 +198,17 @@ public class GuiDay extends javax.swing.JFrame {
     		
     		String[] hs = hour.split(":");
     		int h = Integer.valueOf(hs[0]).intValue();
-    		int m = Integer.valueOf(hs[0]).intValue();
+    		int m = Integer.valueOf(hs[1]).intValue();
     		
-    		hs = hour.split(":");
+    		hs = duration.split(":");
     		int dh = Integer.valueOf(hs[0]).intValue();
-    		int dm = Integer.valueOf(hs[0]).intValue();
+    		int dm = Integer.valueOf(hs[1]).intValue();
     		
     		@SuppressWarnings("deprecation")
 			Date date = (Date) d.clone();
     		date.setHours(h);
     		date.setMinutes(m);
-    		System.out.println("h: "+h+"m: "+m);
+    		System.out.println("row : "+i+"  h: "+h+"m: "+m);
     		System.out.println(d + "  clé :" + date);
     		CalendarData cd = new CalendarData(date,new Event(event,dh*60+dm,h*60+m));
     		c.setDataByDate(cd);
