@@ -113,7 +113,7 @@ public class Calendar {
 		ArrayList<CalendarData> tmp = new ArrayList<CalendarData>();
 		for(CalendarData cd : datas.values()){
 			Date d = cd.getDate();
-			if(d.getYear() == date.getYear() && d.getMonth() == date.getMonth() && d.getDay() == date.getDay())
+			if(d.getYear() == date.getYear() && d.getMonth() == date.getMonth() && d.getDate() == date.getDate())
 				tmp.add(cd);
 		}
 		

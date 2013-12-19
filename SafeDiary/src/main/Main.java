@@ -55,11 +55,14 @@ public class Main {
 			System.out.println(new String(c1.getBytes()));
 			
 			Date d = new Date(112, 11, 2);
-			c1.setDataByDate(new CalendarData(d, new Event("beuh", 50, 20)));
-			c1.setDataByDate(new CalendarData(new Date(112,11,2,5,2), new Event("test", 50, 30)));
+			c1.setDataByDate(new CalendarData(new Date(112, 11, 2,2,2,2), new Event("beuh", 50, 20)));
+			System.out.println(new String(c1.getBytes()));
+			c1.setDataByDate(new CalendarData(new Date(112,11,2,5,2,2), new Event("test", 50, 30)));
+			c1.setDataByDate(new CalendarData(new Date(112, 11, 2,2,2,2), new Event("beuh", 50, 50)));
+			c1.setDataByDate(new CalendarData(new Date(112, 11, 0,2,2,2), new Event("bdfsfs", 100, 100)));
 			System.out.println(new String(c1.getBytes()));
 			
-			c1.removeByDate(new Date(112,11,2,5,2));
+			c1.removeByDate(new Date(112,11,2,5,2,2));
 			
 			System.out.println(new String(c1.getBytes()));
 			
