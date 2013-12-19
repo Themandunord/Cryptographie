@@ -87,7 +87,7 @@ public class GuiDay extends javax.swing.JFrame {
 		int h = Integer.valueOf(hs[0]).intValue();
 		int m = Integer.valueOf(hs[1]).intValue();
 		
-		Date date = (Date) d.clone();
+		Date date = new Date(d.getYear(),d.getMonth(),d.getDate(),d.getHours(),0,0);
 		date.setHours(h);
 		date.setMinutes(m);
 		date.setSeconds(0);
