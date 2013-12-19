@@ -1,13 +1,13 @@
 package main;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.security.Security;
 import java.text.ParseException;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.crypto.KeyGenerator;
 
@@ -23,27 +23,31 @@ public class Main {
 
 	@SuppressWarnings("deprecation")
 	public static void main(String[] args) {
-		try {
-            Security.addProvider(new BouncyCastleProvider());
-            CalendarCrypter crypter = new CalendarCrypter("Salsa20", null, null);
-            KeyGenerator kg = KeyGenerator.getInstance("Salsa20");
-            Key key = kg.generateKey();
-            
-            crypter.cryptFile(key, "src/model/Calendar.java", "Calendar.cry");
-            crypter.decryptFile(key, "Calendar.cry", "Calendar.dat");
-            
-            long srcLength = new File("src/model/Calendar.java").length();
-            long resultLength = new File("Calendar.dat").length();
-            
-            assert srcLength == resultLength : String.format("fichiers source et cible de longueur distincte %-8d : %-8d !..",srcLength, resultLength);
-        } catch (Exception ex) {
-            Logger.getLogger(CalendarCrypter.class.getName()).log(Level.SEVERE, null, ex);
-        }
-		
+		Security.addProvider(new BouncyCastleProvider());
 		Calendar c = new Calendar();
+		Calendar outCal;
 		c.add(new CalendarData(new Date(), new Event("Coucou", 50, 5)));
-		c.add(new CalendarData(new Date(), new Event("Help", 25, 5)));
+		c.add(new CalendarData(new Date(112,11,2), new Event("Help", 25, 5)));
 		
+		CalendarCrypter crypterCustom;
+		try {
+			crypterCustom = new CalendarCrypter("Salsa20", null, null);
+			KeyGenerator kgCustom = KeyGenerator.getInstance("Salsa20");
+			Key key = kgCustom.generateKey();
+	        crypterCustom.cryptCalendar(key, c, new File("Calendar.cry"));
+	        
+	        outCal = crypterCustom.decryptCalendar(key, new File("Calendar.cry"));
+	        System.out.println("####"+new String(outCal.getBytes()));
+		} catch (GeneralSecurityException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		try {
 			System.out.println(new String(c.getBytes()));
 		} catch (UnsupportedEncodingException e1) {
