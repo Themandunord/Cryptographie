@@ -31,6 +31,8 @@ public class GuiDay extends javax.swing.JFrame {
 	 * La date pour laquelle on veut modifier/afficher les évènements
 	 */
 	private Date d;
+	private ArrayList<CalendarData> cds;
+	private ArrayList<Date> toDeletes;
     /**
      * Création de la fenêtre. Instancie et initialise les composants. Appelle la méthode {@link GuiDay#initTable()}.
      * @param d Une date {@see Date}
@@ -47,6 +49,8 @@ public class GuiDay extends javax.swing.JFrame {
             this.setTitle(title[0]+" "+title[1]+" "+title[2]);
             this.c=c;
             this.d=d;
+            this.cds=c.getDataByDay(d);
+            this.toDeletes = new ArrayList<Date>();
             initTable();
         } catch (ParseException ex) {
             Logger.getLogger(GuiDay.class.getName()).log(Level.SEVERE, null, ex);
@@ -189,18 +193,41 @@ public class GuiDay extends javax.swing.JFrame {
     private void supprButtonActionPerformed(java.awt.event.ActionEvent evt) {                                            
         int i = jTable1.getSelectedRow();
         if(i!=-1)
-            ((DefaultTableModel)jTable1.getModel()).removeRow(i);
+        {
+        	// ajoute la date complète dans la liste de clés à suppr.
+        	DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+    		String hour = (String) model.getValueAt(i,1);
+    		
+    		String[] hs = hour.split(":");
+    		int h = Integer.valueOf(hs[0]).intValue();
+    		int m = Integer.valueOf(hs[1]).intValue();
+    		
+    		
+			Date date = (Date) d.clone();
+    		date.setHours(h);
+    		date.setMinutes(m);
+    		date.setSeconds(0);
+        	toDeletes.add(date);
+            model.removeRow(i);
+        }
         
     }
     
     
     /**
      * Methode executée lors de l'appuie sur le bouton ok.
-     * Récupère les données de la list et met à jour le modèle.
+     * Récupère les données de la liste et met à jour le modèle.
      * @param evt (non utilisé)
      */
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {
-    	
+    	/*
+    	 * @TODO
+    	 * Suppression du modèle calendar lors de la suppression du model de la liste
+    	 * Attention la mise à jour de l'heure change la clé primaire et donc création d'un nouvel event.
+    	 * Lors de la modification, il faut supprimer l'ancien et en ajouter un nouveau.
+    	 * La methode setDataByDate() vérifie la présence de la clé et si n'existe pas, créé une nouvelle entrée.
+    	 * Idée de solution : getDataByDate()
+    	 */
     	DefaultTableModel model = (DefaultTableModel)jTable1.getModel();
     	for(int i=0;i<jTable1.getRowCount();i++)
     	{
@@ -216,15 +243,20 @@ public class GuiDay extends javax.swing.JFrame {
     		int dh = Integer.valueOf(hs[0]).intValue();
     		int dm = Integer.valueOf(hs[1]).intValue();
     		
-    		@SuppressWarnings("deprecation")
 			Date date = (Date) d.clone();
     		date.setHours(h);
     		date.setMinutes(m);
+    		date.setSeconds(0);
     		System.out.println("row : "+i+"  h: "+h+"m: "+m);
     		System.out.println(d + "  clé :" + date);
     		CalendarData cd = new CalendarData(date,new Event(event,dh*60+dm,h*60+m));
     		c.setDataByDate(cd);
     		System.out.println(c.getDatas());
+    	}
+    	for(Date date : toDeletes)
+    	{
+    		System.out.println("date to delete : "+date.toString());
+    		c.removeByDate(date);
     	}
     	this.dispose();
         
