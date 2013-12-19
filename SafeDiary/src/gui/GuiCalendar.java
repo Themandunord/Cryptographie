@@ -1,6 +1,9 @@
 
 package gui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import model.Calendar;
 
 /**
@@ -11,10 +14,16 @@ import model.Calendar;
  */
 public class GuiCalendar extends javax.swing.JFrame {
 
+	/**
+	 * La fenêtre d'édition des évènements pour une date donnée
+	 */
     private GuiDay d;
+    /**
+     * Le modèle pour les données.
+     */
     private Calendar c;
     /**
-     * Crée la JFrame, initialise les composants graphiques et instancie le modèle pour les données.
+     * Crée la JFrame, instancie le modèle pour les données et appelle la méthode {@link #initComponents()}
      */
     public GuiCalendar() {
         initComponents();
@@ -91,11 +100,25 @@ public class GuiCalendar extends javax.swing.JFrame {
 
         jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem1.setText("Enregistrer");
+        jMenuItem1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				actionEnregistrer();
+			}
+		});
         jMenuItem1.setToolTipText("");
         jMenu1.add(jMenuItem1);
 
         jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem2.setText("Ouvrir");
+        jMenuItem2.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				actionOuvrir();
+			}
+		});
         jMenu1.add(jMenuItem2);
 
         jMenuBar1.add(jMenu1);
@@ -121,7 +144,15 @@ public class GuiCalendar extends javax.swing.JFrame {
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {                                            
         // TODO add your handling code here:
-    }                                           
+    }
+    
+    private void actionEnregistrer(){
+    	
+    }
+    
+    private void actionOuvrir(){
+    	
+    }
 
     /**
      * Methode appelée lors de l'appuie sur le bouton permettant d'afficher les évènements pour la date sélectionnée.
