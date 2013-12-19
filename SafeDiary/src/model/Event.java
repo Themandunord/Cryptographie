@@ -1,5 +1,11 @@
 package model;
 
+/**
+ * 
+ * @author Rémy
+ *
+ */
+
 public class Event {
 	private String event;
 	private int duration;

@@ -1,5 +1,8 @@
 package model;
 
+/**
+ * @author Rémy
+ */
 import java.util.Date;
 
 public class CalendarData {

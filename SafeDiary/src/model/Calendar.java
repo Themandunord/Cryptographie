@@ -1,5 +1,10 @@
 package model;
 
+/**
+ * 
+ * @author Rémy
+ */
+
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,6 +39,7 @@ public class Calendar {
 		return datas;
 	}
 
+
 	public void setDatas(HashMap<Date, CalendarData> datas) {
 		this.datas = datas;
 	}
@@ -67,8 +73,7 @@ public class Calendar {
 		ArrayList<CalendarData> tmp = new ArrayList<CalendarData>();
 		for(CalendarData cd : datas.values()){
 			Date d = cd.getDate();
-			if(d.getYear() == date.getYear() && d.getMonth() == date.getMonth()
-					&& d.getDay() == date.getDay())
+			if(d.getYear() == date.getYear() && d.getMonth() == date.getMonth() && d.getDay() == date.getDay())
 				tmp.add(cd);
 		}
 		

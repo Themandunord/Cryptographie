@@ -58,8 +58,10 @@ public class Main {
 			
 			Date d = new Date(112, 11, 2);
 			c1.setDataByDate(new CalendarData(d, new Event("beuh", 50, 20)));
-			c1.setDataByDate(new CalendarData(d, new Event("beuh", 50, 30)));
+			c1.setDataByDate(new CalendarData(new Date(112,11,2,5,2), new Event("test", 50, 30)));
 			System.out.println(new String(c1.getBytes()));
+			
+			System.out.println(c1.getDataByDay(d).get(1).getEvent().getEvent());
 			
 		} catch (ParseException | UnsupportedEncodingException e) {
 			e.printStackTrace();
