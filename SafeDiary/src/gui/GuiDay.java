@@ -4,6 +4,10 @@
  */
 package gui;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JFormattedTextField;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.MaskFormatter;
 
@@ -49,13 +54,46 @@ public class GuiDay extends javax.swing.JFrame {
             this.setTitle(title[0]+" "+title[1]+" "+title[2]);
             this.c=c;
             this.d=d;
+            d.setSeconds(0);
+            d.setMinutes(0);
+            d.setHours(0);
             this.cds=c.getDataByDay(d);
             this.toDeletes = new ArrayList<Date>();
+            
+            // résolution du bug de modification de l'heure qui modif la clé et qui donc créé une nouvelle entrée.
+            jTable1.addMouseListener(new MouseAdapter() {
+                public void mouseClicked(MouseEvent e) {
+                    // This is for double click event on anywhere on JTable
+                    if (e.getClickCount() == 2) {
+                        JTable target = (JTable) e.getSource();
+                        int row = target.getSelectedRow();
+                        int column = target.getSelectedColumn();
+                        if(column==1)
+                        {
+                        	addToDelete((String) target.getValueAt(row, column));
+                        }
+                    }
+                }
+
+            });
             initTable();
         } catch (ParseException ex) {
             Logger.getLogger(GuiDay.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    private void addToDelete(String s){
+    	String[] hs = s.split(":");
+		int h = Integer.valueOf(hs[0]).intValue();
+		int m = Integer.valueOf(hs[1]).intValue();
+		
+		Date date = (Date) d.clone();
+		date.setHours(h);
+		date.setMinutes(m);
+		date.setSeconds(0);
+    	toDeletes.add(date);
+    }
+    
     /**
      * Methode permettant de générer la liste des évènements (Nom,Heure,Durée) 
      * pour la date donnée à partir du modèle {@link GuiDay#c} {@see Calendar}
@@ -197,17 +235,7 @@ public class GuiDay extends javax.swing.JFrame {
         	// ajoute la date complète dans la liste de clés à suppr.
         	DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
     		String hour = (String) model.getValueAt(i,1);
-    		
-    		String[] hs = hour.split(":");
-    		int h = Integer.valueOf(hs[0]).intValue();
-    		int m = Integer.valueOf(hs[1]).intValue();
-    		
-    		
-			Date date = (Date) d.clone();
-    		date.setHours(h);
-    		date.setMinutes(m);
-    		date.setSeconds(0);
-        	toDeletes.add(date);
+    		addToDelete(hour);
             model.removeRow(i);
         }
         
@@ -229,6 +257,13 @@ public class GuiDay extends javax.swing.JFrame {
     	 * Idée de solution : getDataByDate()
     	 */
     	DefaultTableModel model = (DefaultTableModel)jTable1.getModel();
+    	
+    	for(Date date : toDeletes)
+    	{
+    		System.out.println("date to delete : "+date.toString());
+    		c.removeByDate(date);
+    	}
+    	
     	for(int i=0;i<jTable1.getRowCount();i++)
     	{
     		String event = (String) model.getValueAt(i,0);
@@ -243,21 +278,24 @@ public class GuiDay extends javax.swing.JFrame {
     		int dh = Integer.valueOf(hs[0]).intValue();
     		int dm = Integer.valueOf(hs[1]).intValue();
     		
-			Date date = (Date) d.clone();
+			Date date = new Date(d.getYear(),d.getMonth(),d.getDate(),d.getHours(),0,0);
     		date.setHours(h);
     		date.setMinutes(m);
     		date.setSeconds(0);
     		System.out.println("row : "+i+"  h: "+h+"m: "+m);
+    		System.out.println(date.getTime());
     		System.out.println(d + "  clé :" + date);
     		CalendarData cd = new CalendarData(date,new Event(event,dh*60+dm,h*60+m));
     		c.setDataByDate(cd);
     		System.out.println(c.getDatas());
+    		System.out.println("");
+    		for(Date dd : c.getDatas().keySet())
+    		{
+    			System.out.print(dd.getTime()+ " %%");
+    		}
+    		System.out.println("");
     	}
-    	for(Date date : toDeletes)
-    	{
-    		System.out.println("date to delete : "+date.toString());
-    		c.removeByDate(date);
-    	}
+    	
     	this.dispose();
         
     }                                        
