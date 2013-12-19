@@ -57,9 +57,9 @@ public class GuiPassword extends JFrame{
 				e.printStackTrace();
 			}
 		if(action.equals("open"))
-			gui.decrypt(/*jPasswordField.getPassword().toString()*/"test", this.f);
+			gui.decrypt(jPasswordField.getPassword().toString(), this.f);
 		else if(action.equals("save"))
-			gui.crypt(/*jPasswordField.getPassword().toString()*/"test", this.f);
+			gui.crypt(jPasswordField.getPassword().toString(), this.f);
 		this.dispose();
 	}
 
