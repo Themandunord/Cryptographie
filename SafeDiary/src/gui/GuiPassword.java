@@ -44,7 +44,7 @@ public class GuiPassword extends JFrame{
 		panel.add(jPasswordField,BorderLayout.CENTER);
 		panel.add(jButton,BorderLayout.SOUTH);
 		this.add(panel);
-		this.setPreferredSize(new Dimension(200,300));
+		this.setPreferredSize(new Dimension(200,110));
 		this.pack();
 	}
 	
@@ -57,9 +57,10 @@ public class GuiPassword extends JFrame{
 				e.printStackTrace();
 			}
 		if(action.equals("open"))
-			gui.decrypt(jPasswordField.getPassword().toString(), this.f);
+			gui.decrypt(new String(jPasswordField.getPassword()), this.f);
 		else if(action.equals("save"))
-			gui.crypt(jPasswordField.getPassword().toString(), this.f);
+			gui.crypt(new String(jPasswordField.getPassword()), this.f);
+		//System.out.println(new String(jPasswordField.getPassword()));
 		this.dispose();
 	}
 

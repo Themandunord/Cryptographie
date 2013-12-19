@@ -172,11 +172,10 @@ public class GuiCalendar extends javax.swing.JFrame {
         {
             File file = fileChooser.getSelectedFile();
             System.out.println(file.toString());
-            this.jTextField1.setText(file.toString());
             GuiPassword gp = new GuiPassword(this,file,"open");
             gp.setVisible(true);
+            this.jTextField1.setText(file.toString());
         }
-
 
     }
     
@@ -194,11 +193,13 @@ public class GuiCalendar extends javax.swing.JFrame {
            
             // we add the extension if not set
             String ext = filter.getFileExtension(file);
-            if(ext == null || !ext.equals("cry"))
+            if(ext == null || !ext.equals("krq"))
                 file = new File(file.getAbsolutePath()+"."+filter.getExtension());
 
             GuiPassword gp = new GuiPassword(this,file,"save");
             gp.setVisible(true);
+            this.jTextField1.setText(file.toString());
+            
         }
     }
     
