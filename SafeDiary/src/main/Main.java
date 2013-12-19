@@ -59,7 +59,9 @@ public class Main {
 			c1.setDataByDate(new CalendarData(new Date(112,11,2,5,2), new Event("test", 50, 30)));
 			System.out.println(new String(c1.getBytes()));
 			
-			System.out.println(c1.getDataByDay(d).get(1).getEvent().getEvent());
+			c1.removeByDate(new Date(112,11,2,5,2));
+			
+			System.out.println(new String(c1.getBytes()));
 			
 		} catch (ParseException | UnsupportedEncodingException e) {
 			e.printStackTrace();
