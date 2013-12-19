@@ -40,13 +40,34 @@ public class CalendarCrypter {
         algoWithIV.put("HC128", 16);
         algoWithIV.put("Salsa20", 8);
     }
+    /**
+     * Constructeur par defaut qui permet d'instancier le cipher
+     * @throws GeneralSecurityException
+     */
     public CalendarCrypter() throws GeneralSecurityException {
         this.cipher = Cipher.getInstance(makeCipherName("Salsa20", null, null));
     }
+    
+    /**
+     * Constructeur valué
+     * @param algoName
+     * @param modeName
+     * @param paddingName
+     * @throws GeneralSecurityException
+     */
     public CalendarCrypter(String algoName, String modeName, String paddingName)
             throws GeneralSecurityException {
         this.cipher = Cipher.getInstance(makeCipherName(algoName, modeName, paddingName));
     }
+    
+    /**
+     * Constructeur valué avec nom du provider
+     * @param algoName
+     * @param modeName
+     * @param paddingName
+     * @param providerName
+     * @throws GeneralSecurityException
+     */
     public CalendarCrypter(String algoName, String modeName, String paddingName, String providerName)
             throws GeneralSecurityException {
         this.cipher = Cipher.getInstance(makeCipherName(algoName, modeName, paddingName), providerName);
@@ -73,7 +94,7 @@ public class CalendarCrypter {
         return sb.toString();
     }
 
-    public void processCalendar(Key key, int mode, AlgorithmParameterSpec specs, Calendar cal, OutputStream out) throws IOException, InvalidKeyException, InvalidAlgorithmParameterException{
+    private void processCalendar(Key key, int mode, AlgorithmParameterSpec specs, Calendar cal, OutputStream out) throws IOException, InvalidKeyException, InvalidAlgorithmParameterException{
     	if (specs == null) {
             cipher.init(mode, key);
         } else {
@@ -83,7 +104,7 @@ public class CalendarCrypter {
         cipherOut.write(cal.getBytes(), 0,cal.getBytes().length);
         cipherOut.close();
     }
-    public String processCalendarDecrypt(Key key, int mode, AlgorithmParameterSpec specs, InputStream in) throws IOException, InvalidKeyException, InvalidAlgorithmParameterException, ParseException{
+    private String processCalendarDecrypt(Key key, int mode, AlgorithmParameterSpec specs, InputStream in) throws IOException, InvalidKeyException, InvalidAlgorithmParameterException, ParseException{
     	if (specs == null) {
             cipher.init(mode, key);
         } else {
@@ -96,7 +117,14 @@ public class CalendarCrypter {
     	in.close();
     	return new String(b,"utf-8");
     }
-    
+    /**
+     * Méthode permettant de crypter un Calendar
+     * @param key - Le mot de passe de l'utilisateur
+     * @param cal - Le calendar à crypter
+     * @param outFile - Le fichier de sortie encrypté
+     * @throws GeneralSecurityException
+     * @throws IOException
+     */
     public void cryptCalendar(String key, Calendar cal, File outFile) throws GeneralSecurityException, IOException{
     	BufferedOutputStream bout = new BufferedOutputStream(new FileOutputStream(outFile));
     	if (!ivNeeded) {
@@ -117,7 +145,15 @@ public class CalendarCrypter {
             processCalendar(this.generateKey(key), Cipher.ENCRYPT_MODE, ivSpec, cal, bout);
         }
     }
-    
+    /**
+     * Méthode permettant de décrypter un fichier
+     * @param key - Le mot de passe permettant de décrypter le fichier
+     * @param inFile - Le fichier à décrypter
+     * @return - Un calendar généré à partir du fichier crypté
+     * @throws GeneralSecurityException
+     * @throws IOException
+     * @throws ParseException
+     */
     public Calendar decryptCalendar(String key, File inFile) throws GeneralSecurityException, IOException, ParseException {
         BufferedInputStream bin = new BufferedInputStream(new FileInputStream(inFile));
         if (!ivNeeded) {
