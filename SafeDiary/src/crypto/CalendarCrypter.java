@@ -16,6 +16,7 @@ import java.security.Key;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.Security;
 import java.security.spec.AlgorithmParameterSpec;
 import java.text.ParseException;
 import java.util.Arrays;
@@ -28,6 +29,8 @@ import javax.crypto.CipherOutputStream;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import model.Calendar;
 
@@ -45,6 +48,7 @@ public class CalendarCrypter {
      * @throws GeneralSecurityException
      */
     public CalendarCrypter() throws GeneralSecurityException {
+    	Security.addProvider(new BouncyCastleProvider());
         this.cipher = Cipher.getInstance(makeCipherName("Salsa20", null, null));
     }
     
@@ -57,6 +61,7 @@ public class CalendarCrypter {
      */
     public CalendarCrypter(String algoName, String modeName, String paddingName)
             throws GeneralSecurityException {
+    	Security.addProvider(new BouncyCastleProvider());
         this.cipher = Cipher.getInstance(makeCipherName(algoName, modeName, paddingName));
     }
     
@@ -70,6 +75,7 @@ public class CalendarCrypter {
      */
     public CalendarCrypter(String algoName, String modeName, String paddingName, String providerName)
             throws GeneralSecurityException {
+    	Security.addProvider(new BouncyCastleProvider());
         this.cipher = Cipher.getInstance(makeCipherName(algoName, modeName, paddingName), providerName);
     }
 
