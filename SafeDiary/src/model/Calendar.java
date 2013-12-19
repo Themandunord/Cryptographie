@@ -138,5 +138,13 @@ public class Calendar {
 		return tmp.getBytes("utf-8");
 	}
 	
+	/**
+	 * Supprime une donnée par la Date
+	 * @param date Date
+	 */
+	public void removeByDate(Date date){
+		datas.remove(date);
+	}
+	
 	
 }
