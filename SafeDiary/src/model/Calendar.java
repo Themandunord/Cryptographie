@@ -1,8 +1,8 @@
 package model;
 
 /**
+ * Classe qui permet de stocker toutes les données de l'utilisateur
  * 
- * @author Rémy
  */
 
 import java.io.UnsupportedEncodingException;
@@ -15,12 +15,23 @@ import java.util.Locale;
 
 public class Calendar {
 	
+	/**
+	 * HashMap contenant les données du calendrier de l'utilisateur
+	 */
 	public HashMap<Date, CalendarData> datas;
 	
+	/**
+	 * Constructeur par défaut du Calendrier
+	 */
 	public Calendar(){
 		this.datas =  new HashMap<Date, CalendarData>();
 	}
 	
+	/**
+	 * Constructeur permettant de construire un Calendrier à partir d'un string
+	 * @param str
+	 * @throws ParseException
+	 */
 	public Calendar(String str) throws ParseException{
 		this.datas =  new HashMap<Date, CalendarData>();
 		String tmp[] = str.split(";");
@@ -35,27 +46,51 @@ public class Calendar {
 		}
 	}
 
+	/**
+	 * Retourne la HashMap
+	 * @return datas
+	 */
 	public HashMap<Date, CalendarData> getDatas() {
 		return datas;
 	}
 
-
+	/**
+	 * Modification de la HashMap
+	 * @param datas la HashMap de données
+	 */
 	public void setDatas(HashMap<Date, CalendarData> datas) {
 		this.datas = datas;
 	}
 	
+	/**
+	 * Permet d'ajouter des données dans le Calendrier
+	 * @param cd CalendarData
+	 */
 	public void add(CalendarData cd){
 		this.datas.put(cd.getDate(), cd);
 	}
 	
+	/**
+	 * Supprime une donnée dans la HashMap à partir d'une donnée
+	 * @param cd CalendarData
+	 */
 	public void remove(CalendarData cd){
 		this.datas.remove(cd.getDate());
 	}
 	
+	/**
+	 * Retourne les données à partir d'une Date donnée
+	 * @param date Date
+	 * @return Une donnée du calendrier
+	 */
 	public CalendarData getDataByDate(Date date){
 		return this.datas.get(date);
 	}
 	
+	/**
+	 * Modification d'une donnée à partir d'une Date donnée en paramètre
+	 * @param cd CalendarData
+	 */
 	public void setDataByDate(CalendarData cd){
 		CalendarData tmp = this.getDataByDate(cd.getDate());
 		if(tmp == null){
@@ -68,6 +103,11 @@ public class Calendar {
 		
 	}
 	
+	/**
+	 * Retourne une liste des données d'une certaine date
+	 * @param date Date
+	 * @return Liste de données
+	 */
 	@SuppressWarnings("deprecation")
 	public ArrayList<CalendarData> getDataByDay(Date date){
 		ArrayList<CalendarData> tmp = new ArrayList<CalendarData>();
@@ -80,6 +120,11 @@ public class Calendar {
 		return tmp;
 	}
 	
+	/**
+	 * Retourne un tableau de byte contenant les informations du calendrier a crypter
+	 * @return Un tableau de byte du calendrier
+	 * @throws UnsupportedEncodingException
+	 */
 	public byte[] getBytes() throws UnsupportedEncodingException{
 		String tmp = "";
 		for(CalendarData cd : datas.values()){
