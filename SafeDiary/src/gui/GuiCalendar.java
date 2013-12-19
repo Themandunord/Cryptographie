@@ -1,8 +1,21 @@
 
 package gui;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.security.GeneralSecurityException;
+import java.text.ParseException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.swing.JFileChooser;
+
+import crypto.CalendarCrypter;
 
 import model.Calendar;
 
@@ -23,11 +36,21 @@ public class GuiCalendar extends javax.swing.JFrame {
      */
     private Calendar c;
     /**
+     * Objet permetant de crypter et décrypter le modèle dans un fichier.
+     */
+    private CalendarCrypter crypter;
+    /**
      * Crée la JFrame, instancie le modèle pour les données et appelle la méthode {@link #initComponents()}
      */
     public GuiCalendar() {
         initComponents();
         c = new Calendar();
+        try {
+			crypter = new CalendarCrypter();
+		} catch (GeneralSecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         this.setTitle("Safe Diary - Remy Kevin Quentin");
     }
 
@@ -53,11 +76,7 @@ public class GuiCalendar extends javax.swing.JFrame {
         jLabel1.setText("Agenda ouvert :");
 
         jTextField1.setEditable(false);
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
-            }
-        });
+        jTextField1.setMinimumSize(new Dimension(400,25)); // line 86
 
         dayButton.setText("Afficher/Editer les Evènements");
         dayButton.addActionListener(new java.awt.event.ActionListener() {
@@ -79,7 +98,7 @@ public class GuiCalendar extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(dayButton))
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
@@ -140,18 +159,65 @@ public class GuiCalendar extends javax.swing.JFrame {
         );
 
         pack();
-    }                     
-
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {                                            
-        // TODO add your handling code here:
-    }
-    
-    private void actionEnregistrer(){
-    	
     }
     
     private void actionOuvrir(){
-    	
+    	JFileChooser fileChooser = new JFileChooser();
+    	fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.addChoosableFileFilter(new CustomFileFilter("krq","SafeDiary crypted file type (.krq)"));
+        
+        int returnVal = fileChooser.showOpenDialog(this);
+        
+        if (returnVal == JFileChooser.APPROVE_OPTION)
+        {
+            File file = fileChooser.getSelectedFile();
+            System.out.println(file.toString());
+            this.jTextField1.setText(file.toString());
+            GuiPassword gp = new GuiPassword(this,file,"open");
+            gp.setVisible(true);
+        }
+
+
+    }
+    
+    private void actionEnregistrer(){
+    	JFileChooser fileChooser = new JFileChooser();
+    	fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.addChoosableFileFilter(new CustomFileFilter("krq","SafeDiary crypted file type (.krq)"));
+        
+        int returnVal = fileChooser.showSaveDialog(this);
+        
+        if (returnVal == JFileChooser.APPROVE_OPTION)
+        {
+        	File file = fileChooser.getSelectedFile();
+            CustomFileFilter filter =(CustomFileFilter) fileChooser.getFileFilter();
+           
+            // we add the extension if not set
+            String ext = filter.getFileExtension(file);
+            if(ext == null || !ext.equals("cry"))
+                file = new File(file.getAbsolutePath()+"."+filter.getExtension());
+
+            GuiPassword gp = new GuiPassword(this,file,"save");
+            gp.setVisible(true);
+        }
+    }
+    
+    public void crypt(String pass,File f){
+    	try {
+			crypter.cryptCalendar(pass,this.c,f);
+		} catch (GeneralSecurityException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    public void decrypt(String pass,File f){
+    	try {
+			this.c = crypter.decryptCalendar(pass, f);
+		} catch (GeneralSecurityException | IOException | ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     /**
