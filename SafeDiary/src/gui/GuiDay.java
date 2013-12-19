@@ -64,7 +64,7 @@ public class GuiDay extends javax.swing.JFrame {
             jTable1.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
                     // This is for double click event on anywhere on JTable
-                    if (e.getClickCount() == 2) {
+                    if (e.getClickCount() == 1) {
                         JTable target = (JTable) e.getSource();
                         int row = target.getSelectedRow();
                         int column = target.getSelectedColumn();
