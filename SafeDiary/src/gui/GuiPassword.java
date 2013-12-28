@@ -12,11 +12,30 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
+/**
+ * Classe représentant la fenêtre qui permet de rentrer le mot de passe.
+ *
+ */
 public class GuiPassword extends JFrame{
+	/**
+	 * La fenêtre parente.
+	 */
 	private GuiCalendar gui;
+	/**
+	 * Un fichier pour lire/écrire les données cryptées
+	 */
 	private File f;
+	/**
+	 * Chaine de charactères représentant l'acion à effectuer : ouvrir ou enregistrer.
+	 */
 	private String action;
 	
+	/**
+	 * Construit la fenêtre.
+	 * @param calendar fenêtre parente pour callback
+	 * @param f fichier pour lire/écrire les données, utilisé pour le callback
+	 * @param action "open" ou "save" pour savoir quelle fonction appeler en callback
+	 */
 	public GuiPassword(GuiCalendar calendar,File f,String action){
 		this.gui=calendar;
 		this.f=f;
@@ -24,6 +43,9 @@ public class GuiPassword extends JFrame{
 		initComponents();
 	}
 	
+	/**
+	 * Initialise les composants graphiques swing.
+	 */
 	private void initComponents(){
 		jLabel = new JLabel();
 		jLabel.setText("Mot de passe :");
@@ -48,6 +70,9 @@ public class GuiPassword extends JFrame{
 		this.pack();
 	}
 	
+	/**
+	 * Appelle la méthode decrypt() ou crypt() de la fenêtre parente suite à la validation du mot de passe.
+	 */
 	private void savePassword(){
 		if(this.gui==null)
 			try {

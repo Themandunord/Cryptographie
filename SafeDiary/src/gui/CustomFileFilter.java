@@ -3,17 +3,29 @@ package gui;
 import java.io.File;
 import javax.swing.filechooser.FileFilter;
 
+/**
+ * Classe représentant un filtre pour les extensions de fichiers dans le JFileChooser.
+ *
+ */
 public class CustomFileFilter extends FileFilter
 {
     private String extension;
     private String description;
    
+    /**
+     * Construit un nouveau filtre.
+     * @param extension l'extension des fichiers filtrés
+     * @param description la description du type de fichier
+     */
     public CustomFileFilter(String extension, String description)
     {
         this.extension=extension;
         this.description=description;
     }
    
+    /**
+     * Vérifie que le fichier est conforme au filtre.
+     */
     public boolean accept(File f)
     {
         if (f.isDirectory())
@@ -33,14 +45,19 @@ public class CustomFileFilter extends FileFilter
         return false;
         }
 
+    /**
+     * retourne la description du filtre
+     */
     public String getDescription()
     {
         return this.description;
     }
    
-    /*
-     * Get the extension of a file.
-     */  
+    /**
+     * Retourne l'extension d'un fichier
+     * @param f le fichier
+     * @return l'extension du fichier par ex : "jpg"
+     */
     public String getFileExtension(File f)
     {
         String ext = null;
@@ -53,6 +70,10 @@ public class CustomFileFilter extends FileFilter
         return ext;
     }
 
+    /**
+     * Retourne l'extension filtrée.
+     * @return l'extension filtrée
+     */
     public String getExtension()
     {
         return this.extension;
