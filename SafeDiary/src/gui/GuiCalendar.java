@@ -56,7 +56,7 @@ public class GuiCalendar extends javax.swing.JFrame {
 
     /**
      * Instancie et initialise les composants swing ( Components, layouts, ...)
-     * et les placent dans la JFrame.
+     * et les place dans la JFrame.
      */
     private void initComponents() {
 
@@ -161,6 +161,11 @@ public class GuiCalendar extends javax.swing.JFrame {
         pack();
     }
     
+    /**
+     * Ouvre une fenêtre pour choisir le fichier à ouvrir et ouvre la fenêtre permettant d'entrer le
+     * mot de passe en instanciant un objet GuiPassword. Cet objet se charge d'appeler la méthode
+     * {@link #decrypt(String pass,File f)} en callback pour décrypter le fichier et mettre à jour le modèle.
+     */
     private void actionOuvrir(){
     	JFileChooser fileChooser = new JFileChooser();
     	fileChooser.setAcceptAllFileFilterUsed(false);
@@ -179,6 +184,11 @@ public class GuiCalendar extends javax.swing.JFrame {
 
     }
     
+    /**
+     * Ouvre une fenêtre pour enregistrer l'agenda dans un fichier. Demande un mot de passe via l'objet GuiPassword.
+     * Cet objet se charge d'appeler la méthode {@link #crypt(String pass,File f)} en callback 
+     * pour générer le contenu crypté du fichier à partir du modèle et du mot de passe.
+     */
     private void actionEnregistrer(){
     	JFileChooser fileChooser = new JFileChooser();
     	fileChooser.setAcceptAllFileFilterUsed(false);
@@ -203,6 +213,11 @@ public class GuiCalendar extends javax.swing.JFrame {
         }
     }
     
+    /**
+     * Enregistre l'agenda sous forme crypté dans le fichier f à l'aide du mot de passe pass.
+     * @param pass le mot de passe pour le chiffrement
+     * @param f le fichier qui contiendra les données encryptées
+     */
     public void crypt(String pass,File f){
     	try {
 			crypter.cryptCalendar(pass,this.c,f);
@@ -212,6 +227,11 @@ public class GuiCalendar extends javax.swing.JFrame {
 		}
     }
     
+    /**
+     * Génère un nouveau modèle à partir du fichier f et du mot de passe pass.
+     * @param pass le mot de passe avec lequel est crypté le fichier
+     * @param f le fichier contenant l'agenda crypté
+     */
     public void decrypt(String pass,File f){
     	try {
 			this.c = crypter.decryptCalendar(pass, f);

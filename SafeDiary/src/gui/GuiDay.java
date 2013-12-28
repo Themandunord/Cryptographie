@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package gui;
 
 import java.awt.event.MouseAdapter;
@@ -25,6 +22,9 @@ import model.Event;
 
 /**
  *	Classe héritant de JFrame permettant l'édition des évènements pour un jour sélectionné.
+ *  Les évènements sont des triplets (Nom,Heure,Durée) et sont associés à un jour du calendrier.
+ *  Dans le modèle, un évènement est référencé par une clé correspondant à la date du jour + l'heure de l'évènement.
+ *  Deux évènements au sein d'un même jour ne peuvent se dérouler à la même heure.
  * 
  */
 public class GuiDay extends javax.swing.JFrame {
@@ -36,8 +36,11 @@ public class GuiDay extends javax.swing.JFrame {
 	 * La date pour laquelle on veut modifier/afficher les évènements
 	 */
 	private Date d;
-	private ArrayList<CalendarData> cds;
+	/**
+	 * Une liste de date représentant la clé d'un évènement à supprimer du modèle lors de la validation.
+	 */
 	private ArrayList<Date> toDeletes;
+	
     /**
      * Création de la fenêtre. Instancie et initialise les composants. Appelle la méthode {@link GuiDay#initTable()}.
      * @param d Une date {@see Date}
@@ -57,7 +60,6 @@ public class GuiDay extends javax.swing.JFrame {
             d.setSeconds(0);
             d.setMinutes(0);
             d.setHours(0);
-            this.cds=c.getDataByDay(d);
             this.toDeletes = new ArrayList<Date>();
             
             // résolution du bug de modification de l'heure qui modif la clé et qui donc créé une nouvelle entrée.
@@ -82,6 +84,10 @@ public class GuiDay extends javax.swing.JFrame {
         }
     }
     
+    /**
+     * Ajoute un évènement dans la liste des évènements à supprimer du modèle. 
+     * @param s la représentation textuelle de l'heure de l'évènement
+     */
     private void addToDelete(String s){
     	String[] hs = s.split(":");
 		int h = Integer.valueOf(hs[0]).intValue();
@@ -220,14 +226,28 @@ public class GuiDay extends javax.swing.JFrame {
         pack();
     }                
 
+    /**
+     * Action d'annulation. Se contente de fermer la fenêtre.
+     * @param evt
+     */
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {                                             
         this.dispose();
     }                                            
 
+    /**
+     * Action d'ajout d'une ligne dans le tableau. Ajoute un évènement par défaut dans le modèle du tableau.
+     * @param evt
+     */
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {                                          
         ((DefaultTableModel)jTable1.getModel()).addRow(new Object[]{"nom","00:00","00:00"});
     }                                         
 
+    /**
+     * Supprime la ligne sélectionnée dans le tableau (première ligne sélectionnée si sélection multiple)
+     * Le modèle du tableau est actualisé et la clé référençant l'évènement est ajoutée à la liste 
+     * des évènements à supprimer du modèle lors de la validation. 
+     * @param evt
+     */
     private void supprButtonActionPerformed(java.awt.event.ActionEvent evt) {                                            
         int i = jTable1.getSelectedRow();
         if(i!=-1)
@@ -245,6 +265,8 @@ public class GuiDay extends javax.swing.JFrame {
     /**
      * Methode executée lors de l'appuie sur le bouton ok.
      * Récupère les données de la liste et met à jour le modèle.
+     * Traite les évènement à supprimer, et ceux à ajouter. Les évènements à modifier
+     * sont supprimés puis rajoutés pour des raisons de simplicité.
      * @param evt (non utilisé)
      */
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {
