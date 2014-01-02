@@ -29,8 +29,8 @@ public class Calendar {
 	
 	/**
 	 * Constructeur permettant de construire un Calendrier à partir d'un string
-	 * @param str
-	 * @throws ParseException
+	 * @param str String au format 
+	 * @throws ParseException #;#;#~#
 	 */
 	public Calendar(String str) throws ParseException{
 		this.datas =  new HashMap<Date, CalendarData>();
