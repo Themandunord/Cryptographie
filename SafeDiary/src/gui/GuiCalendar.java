@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 import crypto.CalendarCrypter;
 
@@ -235,9 +236,11 @@ public class GuiCalendar extends javax.swing.JFrame {
     public void decrypt(String pass,File f){
     	try {
 			this.c = crypter.decryptCalendar(pass, f);
-		} catch (GeneralSecurityException | IOException | ParseException e) {
+		} catch (GeneralSecurityException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (ParseException e){
+			JOptionPane.showMessageDialog(this, "Le mot de passe est incorrect!");
 		}
     }
 
