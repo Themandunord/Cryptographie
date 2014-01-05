@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 
 import javax.swing.JButton;
@@ -52,10 +54,29 @@ public class GuiPassword extends JFrame{
 		jPasswordField = new JPasswordField();
 		jButton = new JButton();
 		jButton.setText("Valider");
+		jButton.setSelected(true);
 		jButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				savePassword();
+			}
+		});
+		jPasswordField.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				// TODO Auto-generated method stub
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode()==KeyEvent.VK_ENTER)
+				{
+					savePassword();
+				}
 			}
 		});
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
