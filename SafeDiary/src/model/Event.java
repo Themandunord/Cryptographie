@@ -1,7 +1,7 @@
 package model;
 
 /**
- * Classe modélisant un tripet événement : event/duration/hours
+ * Classe modélisant un triplet événement : event/duration/hours
  *
  */
 

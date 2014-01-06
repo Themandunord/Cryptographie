@@ -1,77 +1,37 @@
 package main;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.GeneralSecurityException;
-import java.security.Key;
-import java.security.Security;
-import java.text.ParseException;
-import java.util.Date;
-
-import javax.crypto.KeyGenerator;
-
-import model.Calendar;
-import model.CalendarData;
-import model.Event;
-
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
-import crypto.CalendarCrypter;
+import gui.GuiCalendar;
 
 public class Main {
-
-	@SuppressWarnings("deprecation")
+	
+	/**
+     * Methode main du programme.
+     * @param args les arguments de la ligne de commande (non utilisés)
+     */
 	public static void main(String[] args) {
-		Security.addProvider(new BouncyCastleProvider());
-		Calendar c = new Calendar();
-		Calendar outCal;
-		c.add(new CalendarData(new Date(), new Event("Coucou", 50, 5)));
-		c.add(new CalendarData(new Date(112,11,2), new Event("Help", 25, 5)));
-		
-		CalendarCrypter crypterCustom;
 		try {
-			crypterCustom = new CalendarCrypter();
-	        crypterCustom.cryptCalendar("test", c, new File("Calendar.cry"));
-	        
-	        outCal = crypterCustom.decryptCalendar("test", new File("Calendar.cry"));
-	        System.out.println("####"+new String(outCal.getBytes()));
-		} catch (GeneralSecurityException e2) {
-			e2.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		try {
-			System.out.println(new String(c.getBytes()));
-		} catch (UnsupportedEncodingException e1) {
-			e1.printStackTrace();
-		}
-		
-		
-		try {
-			Calendar c1 = new Calendar("Sun Dec 15 17:18:27 CET 2013~Help~25~5;Sun Dec 15 17:18:28 CET 2013~Coucou~50~5");
-			System.out.println(new String(c1.getBytes()));
-			
-			Date d = new Date(112, 11, 2);
-			c1.setDataByDate(new CalendarData(new Date(112, 11, 2,2,2,2), new Event("beuh", 50, 20)));
-			System.out.println(new String(c1.getBytes()));
-			c1.setDataByDate(new CalendarData(new Date(112,11,2,5,2,2), new Event("test", 50, 30)));
-			c1.setDataByDate(new CalendarData(new Date(112, 11, 2,2,2,2), new Event("beuh", 50, 50)));
-			c1.setDataByDate(new CalendarData(new Date(112, 11, 0,2,2,2), new Event("bdfsfs", 100, 100)));
-			System.out.println(new String(c1.getBytes()));
-			
-			c1.removeByDate(new Date(112,11,2,5,2,2));
-			
-			System.out.println(new String(c1.getBytes()));
-			
-		} catch (ParseException | UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		
-		
-		
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(GuiCalendar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(GuiCalendar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(GuiCalendar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(GuiCalendar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new GuiCalendar().setVisible(true);
+            }
+        });		
 		
 	}
 
